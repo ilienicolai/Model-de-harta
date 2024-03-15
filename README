@@ -1,0 +1,103 @@
+/* NICOLAI Ilie - 313CB */
+
+    Algoritmul proiectat citeste din fisier numarul de noduri (N) si numarul de
+muchii (M) si aloca spatiu pentru graf.
+
+-----CERINTA-1-----
+
+    Algoritmul citeste graful din fisier codificand denumirea fiecarui nod cu
+cate un indice. Denumirile nodurilor sunt socate intr-o matrice de caractere,
+indicele din matrice reprezentand codul nodului. Functia de citire a grafului
+citeste denumirea nodului sursa si nodului destinatie, apoi le determina codul
+si insereaza muchia in graf, atat relatia src-dest cat si pe cea
+dest-src.
+    Pentru a determina numarul de componente conexe dar si drumul cel mai scurt
+prin nodurile grafului, programul folosesre algoritmul prim. Vectorul de
+vizitati este initial nul, si se apeleaza algoritmul prim pana cand in graf nu 
+mai exista noduri nevizitate. Dupa fiecare parcurgere este marcata fiecare zona
+cu un indice care incepe de la 2 (pentru a nu exista confuzii dupa prima
+parcurgere).
+    Algoritmul prim calculeaza drumul cel mai scurt prin nodurile componentei
+conexe. Pentru fiecare nod se calculeaza minimul distantei si se actualizeaza
+vectorl de distante corespunzator nodurilor adiacente nodului cu distanta minima.
+    Dupa fiecare parcurgere se calculeaza si costul total prin verificarea 
+componentelor egale cu 1 din vectorul de vizitati. Apoi se atribuie indicele
+corespunzator componentei conexe. Costurile sunt stocate intr-o lista ordonata
+crescator.
+
+
+-----CERINTA-2-----
+
+    Algoritmul citeste din fisier graful corespunzator hartii. Nodurile grafului
+sun codificate de la 0 (Insula), 1 reprezentand Corabia, iar restul de noduri
+au codul corespunzator numarului nodului. Apoi sunt citite adancimile punctelor
+in vectorul dep si masa comorii. 
+    Prima data se apeleaza algoritmul Dijkstra pentru nodul 'Corabia' avand ca 
+scop verificarea existentei unui drum de la corabie la insula. Daca exista un 
+astfel de drum se apeleaza algoritmul pentru nodul sursa 'Insula' pentru a 
+gasi cel mai potrivit drum ca sa fie transportata comoara. Drumul este retinut
+cu ajutorul unui vector de tati.
+    Algoritmul Dijkstra utilizeaza un vector de scoruri numit 'distances', 
+calculate dupa formula precizata. Pentru fiecare nod este determinat minimul 
+distantei si apoi actualizat vecorul de scoruri, la care se adauga memorarea
+unui vector de tati cu ajutorul caruia se retin drumurile si in acelasi timp 
+se verifica existenta celor care ne intereseaza. Initial, vectorul de parinti
+este initializat cu -1 pentru a nu se confunda cu nodul 0 (Insula).
+
+-----DESCRIEREA-FUNCTIILOR-UTILIZATE-----
+
+----CERINTA-1----
+
+---void Citire_Harta_Task_1(TGL *G, char **locuri, FILE *fin, int M)---
+    Functia primeste ca parametrii graful (G), matricea de denumiri (locuri),
+fisierul de intrare si numarul de muchii (M). Fuctia citeste din fisier nodul
+sursa si nodul destinatie, le determina indicii cu ajutorul functiei
+cauta_locuri(), apoi citeste costul. Adauga muchiile in listele de 
+adiacenta ordonate dupa indice. Mai intai adauga relatia src-dest, apoi 
+pe cea dest-src.
+
+---int cauta_locuri(char *n_nod, char **locuri, int n)---
+    Cauta in lista de noduri nodul n_nod. Daca acesta exista se returneaza
+indicele, altfel se adauga denumirea nodului si se returneaza indicele.
+Codificarea nodurilor incepe de la 1.
+
+---void arbprim(TGL *g, int *dist, int *vis)---
+    Functia primeste ca parametrii graful, vectorul de distante si cel de 
+vizitati. Determina drumul cel mai scurt prin nodurile componentei conexe
+utilizand algoritmul prim (descris anterior).
+
+----CERINTA-2----
+
+---void Citire_Harta_Task_2(TGL *G, int M, FILE *fin)---
+    Functia primeste ca parametrii graful, numarul de muchii si fisierul de
+intrare. Se citesc denumirile nodurilor, li se determina indicele apoi este
+adaugata muchia in liste de adiacenta corespunzatoare ordonata.
+
+---int determina_indice(char *nod)---
+    Primeste ca parametru denumirea unui nod si determina indicele. Insula
+are indicele 0, Corabia 1, iar celelalte noduri indicele indicat in nume.
+
+---void djkstra(TGL *g, float *dist, int *vis, int *parents, int *dep)---
+    Functia primeste ca parametrii graful, vectorul de scoruri (dist), vectorul
+de vizitati, vectorul de parinti si vectorul de adancimi. Algoritmul determina
+scorul cel mai avantajos intre doua noduri, retinand cu ajutorul vectorului de 
+tati drumul parcurs. Pentru ficare nod se determina scorul minim din vectorul
+de scoruri si se actualizeaza elementele din distances corespunzatoare nodului
+cu scorul minim.
+
+---int verif_d_cor_ins(int *parents, int N)---
+    Functia verifica daca exista drum de la corabie la insula prin parcurgerea
+vectorrului de tati. Daca se ajunge la valoarea 1 a parintelui inseamna ca s-a
+gasit un drum si se marcheaza prin modificarea variabilei cor_insula. La final
+se returneaza valoarea cor_ins.
+
+---int verif_d_ins_cor(int *parents, int N, TLista **L)---
+    Functia verifica daca exista drum de la insula la corabie prin parcurgerea
+vectorului de tati plecand de la corabie. Daca se ajunge la valoarea 0 a
+parintelui inseamna ca s-a gasit un drum. De asemenea nodurile parcurse
+sunt stocate intr-o lista simplu inlantuita.
+
+OBS:
+    Punctajul local este de 120/100. Pe VMchecker pica testele 0 si 9 de la 
+CERINTA 2.
+
